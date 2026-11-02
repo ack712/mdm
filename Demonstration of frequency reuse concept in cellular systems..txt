@@ -1,0 +1,76 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import RegularPolygon
+
+# =====================================================
+# USER INPUTS
+# =====================================================
+num_frequencies = int(input("Enter the number of frequency channels: "))
+rows = int(input("Enter number of rows: "))
+cols = int(input("Enter number of columns: "))
+radius = 1
+
+# =====================================================
+# Generate Frequency Labels
+# =====================================================
+frequencies = [f"F{i+1}" for i in range(num_frequencies)]
+
+# =====================================================
+# Generate Colors Automatically
+# =====================================================
+# Use the HSV colormap to create any number of distinct colors
+cmap = plt.cm.get_cmap('hsv', num_frequencies)
+colors = [cmap(i) for i in range(num_frequencies)]
+
+# =====================================================
+# Create Figure
+# =====================================================
+fig, ax = plt.subplots(figsize=(10, 10))
+
+# =====================================================
+# Draw Hexagonal Cellular Layout
+# =====================================================
+for row in range(rows):
+    for col in range(cols):
+
+        # Hexagon center
+        x = col * 1.5 * radius
+        y = np.sqrt(3) * radius * (row + 0.5 * (col % 2))
+
+        # Frequency assignment
+        freq = (row + 2 * col) % num_frequencies
+
+        hexagon = RegularPolygon(
+            (x, y),
+            numVertices=6,
+            radius=radius,
+            orientation=np.radians(30),
+            facecolor=colors[freq],
+            edgecolor='black',
+            alpha=0.7
+        )
+
+        ax.add_patch(hexagon)
+
+        # Display frequency label
+        ax.text(
+            x,
+            y,
+            frequencies[freq],
+            ha='center',
+            va='center',
+            fontsize=8,
+            fontweight='bold'
+        )
+
+# =====================================================
+# Plot Formatting
+# =====================================================
+ax.set_aspect('equal')
+ax.set_xlim(-2, cols * 1.7)
+ax.set_ylim(-1, rows * np.sqrt(3) + 2)
+
+plt.title(f"Frequency Reuse Demonstration ({num_frequencies} Frequency Channels)")
+plt.axis('off')
+
+plt.show()

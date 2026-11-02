@@ -1,0 +1,66 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Experimental data
+data = {
+    "Distance_m": [1, 2, 3, 5, 7, 10],
+    "No_Obstacle": [-42, -48, -53, -59, -64, -69],
+    "One_Wall": [-48, -55, -61, -68, -73, -78],
+    "Two_Walls": [-54, -61, -68, -75, -81, -86]
+}
+
+df = pd.DataFrame(data)
+
+print("Indoor RSSI Measurement Data")
+print(df)
+
+# Reference RSSI at 1 meter
+reference_rssi = df["No_Obstacle"].iloc[0]
+
+# Relative path loss
+df["PathLoss_No_Obstacle"] = (
+    reference_rssi - df["No_Obstacle"]
+)
+
+df["PathLoss_One_Wall"] = (
+    reference_rssi - df["One_Wall"]
+)
+
+df["PathLoss_Two_Walls"] = (
+    reference_rssi - df["Two_Walls"]
+)
+
+print("\nPath Loss Data:")
+print(df)
+
+# Plot RSSI vs Distance
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    df["Distance_m"],
+    df["No_Obstacle"],
+    marker="o",
+    label="No Obstacle"
+)
+
+plt.plot(
+    df["Distance_m"],
+    df["One_Wall"],
+    marker="s",
+    label="One Wall"
+)
+
+plt.plot(
+    df["Distance_m"],
+    df["Two_Walls"],
+    marker="^",
+    label="Two Walls"
+)
+
+plt.xlabel("Distance (m)")
+plt.ylabel("RSSI (dBm)")
+plt.title("RSSI vs Distance for Different Indoor Obstacles")
+plt.grid(True)
+plt.legend()
+plt.show()
